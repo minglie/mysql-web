@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://minglie.github.io/js/M_mock.js"></script>
+
+
+<body>
+
+  <button id="btn">run</button>
+
+
+
+<script type="text/javascript">
+	
+		app.get("/listByPage",(req,res)=>{
+			res.send(req.params)
+		})
+
+
+	    btn.onclick=function () {
+	        M.IO.listByPage({startPage:4,limit:5}).then((u)=>console.log(u))
+	    }
+	
+</script>
+
+
+</body>
+</html>
