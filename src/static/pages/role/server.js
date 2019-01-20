@@ -1,5 +1,17 @@
 
 
+
+
+app.get("/getConfigTree",async function (req,res) {
+
+    r=await Context.resource.getConfigTree();
+    res.send(r);
+
+});
+
+
+
+
 app.post("/listByPage",function (req,res) {
   const sql=` 
     select * from role  limit  ${(req.params.page-1)*req.params.rows},${req.params.rows};  

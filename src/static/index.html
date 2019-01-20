@@ -6,7 +6,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>index</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script src="/js/M_mock.js"></script>
+    <script src="/js/Context.js"></script>
 
 
 </head>
@@ -16,6 +19,34 @@
 <a href="pages/login/index.html">注册</a>
 <a href="pages/role/index.html">角色管理</a>
 <a href="pages/resource/index.html">资源管理</a>
+<a href="pages/log/index.html">日志管理</a>
+
+<br/>
+----------------------------------------------------------------------
+<br/>
+<button id="btn">执行</button><br/>
+<textarea id="text_input" rows="50" cols="50"></textarea>
+<textarea id="text_output" rows="50" cols="70"></textarea>
+<script>
+
+
+
+
+
+
+
+    btn.onclick=function () {
+        sql=text_input.value;
+        Context.doSql(sql,(d)=>{
+            text_output.value=M.formatJson(JSON.stringify(d.data));
+        })
+    }
+
+</script>
+
+
+
+
 
 
 

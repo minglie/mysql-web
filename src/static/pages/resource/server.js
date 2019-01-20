@@ -17,35 +17,6 @@ app.post("/listByPage",function (req,res) {
 
 app.post("/add",function (req,res) {
     const {parent_id,keyword,name}=req.params;
-    // sql=`
-    //
-    //      insert into resource(parent_id,keyword,name,longcode)
-    //      (
-    //             SELECT * from
-    //             (
-    //                         SELECT  '${parent_id}','${keyword}' keyword,'${name}' name,CONCAT(
-    //                         (
-    //                            SELECT IFNULL((SELECT longcode from resource WHERE id='${parent_id}'),'')),
-    //                            '/',
-    //                           (SELECT LPAD(right(IFNULL(max(longcode),0),6)+1,6,0) from  resource WHERE parent_id='${parent_id}')
-    //                         )
-    //             )t1
-    //             where
-    //             t1.name
-    //             not in
-    //             (
-    //                 SELECT NAME from resource  where parent_id=${parent_id}
-    //             )
-    //             and
-    //             t1.keyword
-    //             not in
-    //             (
-    //                 SELECT keyword from resource
-    //             )
-    //             limit 1
-    //          )
-    //     ;
-    // `;
 
     sql=`      
           
@@ -96,11 +67,26 @@ app.post("/update",function (req,res) {
 
 
 
-
+//存储过程遍历数组
 app.get("/delete",function (req,res) {
 
-    let sql=`      
-        delete from resource where id in (${req.params.ids});
+    let sql=`    
+ DECLARE cur_id varchar(200);
+ SET @array_content="${req.params.ids}";  
+ SET @i=1;  
+ 
+ SET @count = CHAR_LENGTH(@array_content)-CHAR_LENGTH(REPLACE(@array_content,',','')) + 1; 
+ WHILE @i <= @count  
+ DO  	
+ SELECT  SUBSTRING_INDEX(SUBSTRING_INDEX(@array_content,',',@i),',',-1) into cur_id;
+ SET @i=@i+1; 
+ DELETE from resource 
+		WHERE id in(
+	 SELECT id from(
+		 SELECT t2.id from resource t2 WHERE longcode like  CONCAT((SELECT longcode from resource t1 WHERE t1.id=cur_id),'%')
+	 )t3
+);
+ END WHILE; 
     `;
 
     Context.doSql(sql,(d)=>{
@@ -112,54 +98,11 @@ app.get("/delete",function (req,res) {
 
 
 
-function  getChildsById(id) {
-    let sql=`      
-        select * from resource where parent_id = ${id};
-    `;
-    var promise = new Promise(function(reslove,reject){
-        Context.doSql(sql,(d)=>{
-            reslove(d.data[0]);
-        })
-
-    });
-    return promise;
-}
-
-
-async function getChilds(resource) {
-    let resourceList =await getChildsById(resource.id);
-    resource.childrens=resourceList;
-    if(resourceList.length>0){
-        for (let i=0;i<resourceList.length;i++){
-            await getChilds(resourceList[i]);
-        }
-    }
-}
-
-
-
-
-async function getConfigTree(){
-    resourceList=await getChildsById(-1);
-    if(resourceList.length>0){
-        for (let i=0;i<resourceList.length;i++){
-           await getChilds(resourceList[i]);
-        }
-
-    }
-    return resourceList;
-}
-
-
-
 
 
 app.get("/getChildsById",function (req,res) {
 
-    let sql=`      
-        delete from resource where id in (${req.params.ids});
-    `;
-    getChildsById(55).then(d=>res.send(d))
+    Context.resource.getChildsById(55).then(d=>res.send(d))
 
 });
 
@@ -168,7 +111,7 @@ app.get("/getChildsById",function (req,res) {
 
 app.get("/getConfigTree",async function (req,res) {
 
-    r=await getConfigTree();
+    r=await  Context.resource.getConfigTree();
     res.send(r);
 
 });

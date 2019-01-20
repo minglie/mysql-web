@@ -49,16 +49,39 @@
         //修改对话框
         $('#updateDialog').dialog({
             title: '修改角色',
+            maximizable:true,
             width: 300,
             height: 200,
             closed: true,
             cache: false,
             modal: true  ,
+            resizable:true,
             buttons:"#updateDialogButtons"
         });
 
     }
 //初始化修改对话框END
+
+    //初始化分配资源对话框START
+    function initAssignResourceByRoleIdDialog(){
+        //修改对话框
+        $('#assignResourceByRoleIdDialog').dialog({
+            title: '分配资源',
+            maximizable:true,
+            width: 300,
+            height: 300,
+            closed: true,
+            cache: false,
+            modal: true  ,
+            buttons:"#assignResourceByRoleIdDialogButtons"
+        });
+
+    }
+//初始化分配资源对话框END
+
+
+
+
 
 
 //事件绑定START
@@ -101,6 +124,25 @@
             }
         );
 
+        //分配资源
+        $("#roleDataGridToolButton [name='assign']").click(
+
+               function () {
+                   M.IO.getConfigTree().then((d)=>{
+                       let r=[];
+                       Context.resource.convertEasyUITree(d,r,[0]);
+                       // console.log(d,r)
+                       $('#resourceTree').tree({
+                           data:r,
+                           checkbox: true,
+                           onlyLeafCheck: false,//仅叶子节点可以被选中
+                           cascadeCheck : true//false取消关联, true可以关联
+                       });
+                       $('#assignResourceByRoleIdDialog').dialog("open");//打开添加对话框
+                   });
+               }
+        );
+
 
         //添加对话框上的添加按钮
         $("#addDialogButtons [name='add']").click(
@@ -130,14 +172,9 @@
         //更改对话框上的 更改按钮
         $("#updateDialogButtons [name='update']").click(
             function(){
-
-
-
-
                 var role_name=$("#updateForm [name='role_name']").val();
                 var role_code=$("#updateForm [name='role_code']").val();
                 var id=$("#updateForm [name='role_id']").val();
-
 
                 M.IO.update(
                     {
@@ -169,6 +206,7 @@
         initDataGrid();//初始化DataGrid
         initAddDialog();//初始化添加对话框
         initUpdateDialog();//初始化修改对话框
+        initAssignResourceByRoleIdDialog();
     })
 
 })();

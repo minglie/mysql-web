@@ -1,29 +1,3 @@
-function convertEasyUITree(resList,resultRes,ids) {
-    if(resList){
-        for (let i=0;i<resList.length;i++){
-            if(1){
-                var r={};
-
-                r.parent_id=resList[i].parent_id;
-                r.keyword=resList[i].keyword;
-                r.name=resList[i].name;
-
-
-                r.id=resList[i].id;
-                r.text=resList[i].id+"  "+resList[i].name;
-                r.checked=false;
-                r.state=null;
-                if(ids.indexOf(resList[i].id)>=0)r.checked=true;
-                else   r.checked=false;
-                resultRes.push(r);
-                r.children=[];
-                convertEasyUITree(resList[i].childrens,r.children,ids)
-            }
-        }
-    }
-}
-
-
 
 
 
@@ -62,13 +36,13 @@ function convertEasyUITree(resList,resultRes,ids) {
     function resourceTreeInit() {
         M.IO.getConfigTree().then((d)=>{
                 let r=[];
-                convertEasyUITree(d,r,[0]);
+            Context.resource.convertEasyUITree(d,r,[0]);
                // console.log(d,r)
                 $('#resourceTree').tree({
                     data:r,
                     checkbox: true,
                     onlyLeafCheck: false,//仅叶子节点可以被选中
-                    cascadeCheck : false,//false取消关联, true可以关联
+                    cascadeCheck : true,//false取消关联, true可以关联
                     onContextMenu:function(e, node){
                         e.preventDefault();
                         var id = node.id;
