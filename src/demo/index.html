@@ -10,8 +10,8 @@
 
 <body>
 
-  <button id="btn">run</button>
-
+  <button id="btn1">run1</button>
+  <button id="btn2">run2</button>
 
 
 <script type="text/javascript">
@@ -21,9 +21,20 @@
 		})
 
 
-	    btn.onclick=function () {
+	    btn1.onclick=function () {
 	        M.IO.listByPage({startPage:4,limit:5}).then((u)=>console.log(u))
 	    }
+
+
+        btn2.onclick=function () {
+            console.log(M.get("/listByPage",{startPage:1,limit:2}))
+        }
+
+
+
+
+
+
 	
 </script>
 
