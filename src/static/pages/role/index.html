@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://minglie.github.io/public/js/jquery.easyui.min.js"></script>
+    <script src="/js/M_mock.js"></script>
+    <script src="/js/Context.js"></script>
+    <script src="./server.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+
+
+<body>
+
+
+<!-- 角色管理按钮 -->
+<div id="roleDataGridToolButton">
+    <a name="add" href="javascript:void(0)" class="easyui-linkbutton"data-options="iconCls:'icon-add'">添加</a>
+    <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">更改</a>
+    <a name="remove" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+</div>
+
+<!-- 角色管理-->
+<table id="roleDataGrid" width="100%"></table>
+
+
+<!-- 添加对话框 -->
+<div id="addDialog" style="padding:3px" >
+    <form id="addForm" method="post">
+        角色编码<input name="role_code"><br>
+        角色名字<input name="role_name">
+    </form>
+</div>
+
+
+<!-- 添加对话框上的按钮 -->
+<div id="addDialogButtons">
+    <a name="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">确认</a>
+    <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+</div>
+
+
+<!-- 修改对话框 -->
+<div id="updateDialog">
+    <form id="updateForm" method="post">
+        <input name="role_id" />
+        角色权限<input name="role_code"><br>
+        角色名字<input name="role_name">
+    </form>
+</div>
+
+<!-- 修改对话框上的按钮 -->
+<div id="updateDialogButtons">
+    <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">更改</a>
+    <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+</div>
+
+</body>
+
+
+</html>

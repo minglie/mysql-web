@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://minglie.github.io/public/js/jquery.easyui.min.js"></script>
+    <script src="/js/M_mock.js"></script>
+    <script src="/js/Context.js"></script>
+    <script src="./server.js"></script>
+</head>
+
+
+<body>
+
+
+<!-- 角色管理按钮 -->
+<div id="roleDataGridToolButton">
+    <a name="add" href="javascript:void(0)" class="easyui-linkbutton"data-options="iconCls:'icon-add'">添加</a>
+    <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">更改</a>
+    <a name="remove" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+</div>
+
+<!-- 角色管理-->
+<table id="roleDataGrid" width="100%"></table>
+
+
+<!-- 添加对话框 -->
+<div id="addDialog" style="padding:3px" >
+    <form id="addForm" method="post">
+        角色权限<input name="resourceComboTree"><br>
+        角色名字<input name="rolename">
+    </form>
+</div>
+
+<!-- 添加对话框上的按钮 -->
+<div id="addDialogButtons">
+    <a name="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'"">确认</a>
+    <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'"">取消</a>
+</div>
+
+
+
+<!-- 修改对话框 -->
+<div id="updateDialog">
+    <form id="updateForm" method="post">
+        <input name="roleId" type="hidden"/>
+        角色权限<input name="resourceComboTree"><br>
+        角色名字<input name="rolename">
+    </form>
+</div>
+
+<!-- 修改对话框上的按钮 -->
+<div id="updateDialogButtons">
+    <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'"">更改</a>
+    <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'"">取消</a>
+</div>
+
+
+<script>
+
+
+    (function() {
+        function initDataGrid(){
+            $('#roleDataGrid').datagrid({
+                title:"角色管理",//继承于panel,在面板头部显示的标题文本。
+                url:"/listByPage",
+                width:10000,
+                rownumbers:true,//使能行号列
+
+                toolbar:"#roleDataGridToolButton",//顶部显示的工具栏
+
+                pagination:true,//显示分页工具栏
+                pageSize:10,//在设置分页属性的时候初始化页面大小。
+                pageList:[5,7,10],//在设置分页属性的时候 初始化页面大小选择列表。
+
+                //行样式
+                rowStyler:function(rowIndex,rowData){
+                    if(rowData.id%2==0){
+                        return "background-color:pink";
+                    }
+                },
+                //列
+                columns:[[
+                    {checkbox:true},
+                    {field:'id',title:'',width:100, hidden:true},
+                    {field:'role_code',title:'角色编码',width:100},
+                    {field:'role_name',title:'角色名字',width:100}
+                ]]
+            });
+        }
+//初始化myDataGridEND
+
+        //初始化添加对话框START
+        function initAddDialog(){
+            //添加对话框
+            $('#addDialog').dialog({
+                title: '添加角色',
+                width: 300,
+                height: 200,
+                closed: true,
+                cache: false,
+                modal: true  ,
+                buttons:"#addDialogButtons"
+            });
+
+        }
+//初始化添加对话框END
+
+//初始化修改对话框START
+        function initUpdateDialog(){
+            //修改对话框
+            $('#updateDialog').dialog({
+                title: '修改角色',
+                width: 300,
+                height: 200,
+                closed: true,
+                cache: false,
+                modal: true  ,
+                buttons:"#updateDialogButtons"
+            });
+
+        }
+//初始化修改对话框END
+
+
+//事件绑定START
+        $(function(){
+            //DataGrid添加按钮
+            $("#roleDataGridToolButton [name='add']").click(
+                function(){
+                    $('#addDialog').dialog("open");//打开添加对话框
+                }
+            );
+
+            //DataGrid删除按钮
+            $("#roleDataGridToolButton [name='remove']").click(function() {
+                var row = $('#roleDataGrid').datagrid("getSelections");
+                if (row.length == 0) {
+                    $.messager.alert('我的消息', '请先选择删除！', 'info');
+                } else {
+                    $.messager.confirm('温馨提示', '确认删除选择的内容？', function(r) {
+
+                    });
+
+                }
+            });
+
+            //DataGrid修改按钮
+            $("#roleDataGridToolButton [name='update']").click(
+                function(){
+                    var row=$('#roleDataGrid').datagrid("getSelections");
+
+                    if(row.length==1){
+                        var resourceIds=[-1];
+                        //获取选中角色的资源id数组
+                        $.ajax({
+                            async : false,
+                            type : "POST",
+                            url : "../role/selectResourceIdsByRoleName.do",
+                            data : "rolename=" + row[0].rolename,
+                            success : function(data) {
+                                data=JSON.parse(data);
+                                resourceIds=data;
+                            }
+                        });
+
+                        //取消选中
+                        for(var i in window.updateTree.tree("getChildren")){
+                            window.updateTree.tree('uncheck', window.updateTree.tree("getChildren")[i].target);
+                        }
+
+                        //选中
+                        for(var i=0;i<resourceIds.length;i++){
+                            var node = window.updateTree.tree('find', resourceIds[i]);
+                            //只选中叶子节点
+                            if(window.updateTree.tree("isLeaf",node.target)){
+                                window.updateTree.tree('check', node.target);
+                            }
+
+                        }
+                        $("#updateDialog [name='roleId']").val(row[0].id);
+
+                        $("#updateDialog [name='rolename']").val(row[0].rolename);
+
+                        $('#updateDialog').dialog("open");//打开添加对话框
+
+                    }else{//不是选择了一行
+                        $.messager.alert('我的消息','请选择一行进行修改！','info');
+                    }
+                }
+            );
+
+
+            //添加对话框上的添加按钮
+            $("#addDialogButtons [name='add']").click(
+                function(){
+
+                    var resourceIds=[-1]
+                    //获取选中的节点
+                    var nodeP = window.addTree.tree("getChecked","indeterminate");
+                    var nodeS = window.addTree.tree("getChecked");
+
+                    $.each(nodeP,function(index,val){
+                        resourceIds.push(val.id);
+                    })
+                    $.each(nodeS,function(index,val){
+                        resourceIds.push(val.id);
+                    })
+
+                    //获取添加的角色名字
+                    var rolename=$("#addForm [name='rolename']").val();
+                    console.log(resourceIds);
+
+                    $.ajax({
+                        async : false,
+                        type : "POST",
+                        url : "../role/add.do",
+                        data : {"rolename":rolename,"resourceIds":resourceIds},
+                        traditional: true,//数组不加[]
+                        success : function(data) {
+                            console.log(data);
+                            data=JSON.parse(data);
+                            if (data.k == "添加成功") {
+                                $.messager.alert('我的消息', '添加成功！', 'info');
+                                $('#addDialog').dialog("close");//打开添加对话框
+
+                                $('#roleDataGrid').datagrid('reload');// 重新载入数据
+                            } else {
+                                $.messager.alert('我的消息', '添加失败！', 'info');
+                            }
+                        }
+                    });
+
+                }
+            );
+            //添加对话框上的取消按钮
+            $("#addDialogButtons [name='cancel']").click(
+                function(){
+                    //alert("cancel");
+                    $('#addDialog').dialog("close");//关闭添加对话框
+                }
+            );
+
+            //更改对话框上的 更改按钮
+            $("#updateDialogButtons [name='update']").click(
+                function(){
+                    //获取选中的节点
+                    var resourceIds=[-1]
+                    //获取选中的节点
+                    var nodeP = window.updateTree.tree("getChecked","indeterminate");
+                    var nodeS = window.updateTree.tree("getChecked");
+
+                    $.each(nodeP,function(index,val){
+                        resourceIds.push(val.id);
+                    })
+                    $.each(nodeS,function(index,val){
+                        resourceIds.push(val.id);
+                    })
+
+                    //获取添加的角色名字
+                    var rolename=$("#updateForm [name='rolename']").val();
+                    var roleId=$("#updateForm [name='roleId']").val();
+                    console.log(resourceIds);
+                    $.ajax({
+                        async : false,
+                        type : "POST",
+                        url : "../role/update.do",
+                        data : { id:roleId, "rolename":rolename,"resourceIds":resourceIds},
+                        traditional: true,//数组不加[]
+                        success : function(data) {
+                            console.log(data);
+                            data=JSON.parse(data);
+                            if (data.k == "更改成功") {
+                                $.messager.alert('我的消息', '更改成功！', 'info');
+                                $('#roleDataGrid').datagrid('reload');// 重新载入数据
+                                $('#updateDialog').dialog("close");//关闭添加对话框
+
+                            } else {
+                                $.messager.alert('我的消息', '更改失败！', 'info');
+                            }
+                        }
+                    });
+                }
+            );
+
+            //更改对话框上的取消按钮
+            $("#updateDialogButtons [name='cancel']").click(
+                function(){
+                    $('#updateDialog').dialog("close");
+                }
+            );
+
+
+
+
+        })
+//事件绑定END
+
+        //页面初始化
+        $(function(){
+            initDataGrid();//初始化DataGrid
+            initAddDialog();//初始化添加对话框
+            initUpdateDialog();//初始化修改对话框
+        })
+
+    })();
+
+</script>
+
+</body>
+</html>

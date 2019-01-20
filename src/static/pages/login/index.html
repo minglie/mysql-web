@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>index</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+    <script src="/js/M_mock.js"></script>
+    <script src="/js/Context.js"></script>
+    <script src="server.js"></script>
+</head>
+<body>
+
+
+
+<div id="root">
+    username:<input  v-model="username"><br/>
+    password:<input  v-model="password">
+    <button @click="login">登陆</button>
+</div>
+
+
+
+
+<script>
+    new Vue({
+        el: '#root',
+        data: {
+            username:"",
+            password:""
+        },
+        methods:{
+            login(){
+                 M.IO.login({
+                     username:this.username,
+                     password:this.password
+                 }).then(r=>{
+                     if(r.success){
+                        location.href='/pages/role/index.html'
+                     }else {
+                         alert("登陆失败")
+                     }
+                 })
+            }
+
+
+        }
+    })
+
+</script>
+
+</body>
+</html>

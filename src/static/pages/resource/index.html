@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://minglie.github.io/public/js/jquery.easyui.min.js"></script>
+    <script src="/js/M_mock.js"></script>
+    <script src="/js/Context.js"></script>
+    <script src="./server.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+
+
+<body class="easyui-layout">
+
+<!-- 上面的菜单 -->
+<div data-options="region:'north'" style="height:0px;">
+</div>
+
+
+<!-- 左边的树状菜单 -->
+<div data-options="region:'west',title:'菜单详情'" style="width:200px;">
+    <div>
+        <ul id="resourceTree" class="easyui-tree" animate="false">
+        </ul>
+    </div>
+
+
+    <div id="rightclickdiv" class="easyui-menu" style="width: 115px;">
+        <div data-options="iconCls:'icon-add',name:'001'">append</div>
+        <div data-options="iconCls:'icon-edit',name:'002'">update</div>
+        <div data-options="iconCls:'icon-remove',name:'003'">remove</div>
+    </div>
+
+
+</div>
+
+
+
+<!-- 中间的数据展示 -->
+<div id="center" data-options="region:'center',title:'数据展示'">
+    <!-- 资源管理按钮 -->
+    <div id="resourceDataGridToolButton">
+        <a name="add" href="javascript:void(0)"    class="easyui-linkbutton"data-options="iconCls:'icon-add'">添加</a>
+        <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">更改</a>
+        <a name="remove" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+        <button id="btn">测试</button>
+    </div>
+
+    <!-- 资源管理-->
+    <table id="resourceDataGrid"  width="100%"></table>
+
+
+    <!-- 添加对话框 -->
+    <div id="addDialog" style="padding:3px" >
+        <form id="addForm" method="post">
+            父id<input name="parent_id" disabled><br>
+            关键字<input name="keyword"><br>
+            资源名字<input name="name">
+        </form>
+    </div>
+
+
+    <!-- 添加对话框上的按钮 -->
+    <div id="addDialogButtons">
+        <a name="add" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">确认</a>
+        <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+    </div>
+
+
+    <!-- 修改对话框 -->
+    <div id="updateDialog">
+        <form id="updateForm" method="post">
+            id<input name="res_id" disabled><br>
+            父id<input name="parent_id" disabled><br>
+            关键字<input name="keyword"><br>
+            资源名字<input name="name">
+        </form>
+    </div>
+
+    <!-- 修改对话框上的按钮 -->
+    <div id="updateDialogButtons">
+        <a name="update" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">更改</a>
+        <a name="cancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+    </div>
+
+</div>
+
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
