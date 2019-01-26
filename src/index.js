@@ -1,11 +1,39 @@
 var M=require("ming_node");
+var mysql  = require('mysql');
+
 M.log_file_enable=false; //不用打印日志到文件
-var Db=require("./modules/ming_mysql");
 
 var app=M.server();
 app.listen(8888);
 
-Db.display_sql_enable=false;
+
+var Db = mysql.createConnection(
+{
+    "host"     : "127.0.0.1",
+    "user"     : "root",
+    "password" : "123456",
+    "port"     : "3306",
+    "database" : "ming-lie",
+    "multipleStatements": true
+});
+
+
+Db.doSql=function(sql){
+    var promise = new Promise(function(reslove,reject){
+            Db.query(sql,
+                function (err, result) {
+                    if(err){
+                        console.error(err);
+                        reject(err);
+                    }
+                    reslove(result);
+                });
+
+    })
+    return promise;
+}
+
+
 
 prefixSql=`
 DROP PROCEDURE IF EXISTS p;    

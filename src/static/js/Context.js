@@ -2,34 +2,6 @@
 const Context={}
 
 
-Context.doSql=function (sql,callback) {
-    axios({
-        url: '/doSql',
-        method: 'post',
-        data: {
-            sql
-        },
-        transformRequest: [function (data) {
-            let ret = '';
-            for (let it in data) {
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-            }
-            return ret
-        }],
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    })
-        .then(function (response) {
-            callback(response.data);
-        })
-        .catch(function (error) {
-            console.err(error);
-        });
-};
-
-
-
 
 
 {
@@ -62,7 +34,7 @@ Context.doSql=function (sql,callback) {
           select * from resource where parent_id = ${id};
         `;
         var promise = new Promise(function(reslove,reject){
-            Context.doSql(sql,(d)=>{
+            M.doSql(sql,(d)=>{
                 reslove(d.data[0]);
             })
 
@@ -92,15 +64,6 @@ Context.doSql=function (sql,callback) {
         return resourceList;
     };
 }
-
-
-
-
-
-
-
-
-
 
 
 
