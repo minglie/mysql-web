@@ -26,7 +26,7 @@ class ModelTable extends React.Component {
             total: 0,
         };
 
-        store.subscribe(()=>{this.setState(store.getState())});
+
     }
     componentDidMount() {
             let current=1;
@@ -38,6 +38,14 @@ class ModelTable extends React.Component {
             }
         );
     };
+
+    componentWillMount () {
+        store.subscribe(()=>{this.setState(store.getState())});
+    }
+
+
+
+
     onChange(current, pageSize) {
             m_this.m_props.Alldatas(
             {

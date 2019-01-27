@@ -60,7 +60,8 @@ app.post("/doSql",async function (req,res) {
    try{
        var rows= await Db.doSql(prefixSql+req.params.sql+SuffixSql);
        var r=rows.slice(2);
-       console.log(JSON.stringify(r))
+
+      // console.log(JSON.stringify(r))
        res.send(M.result(r));
    }catch (e){
        res.send(M.result(e,false));
