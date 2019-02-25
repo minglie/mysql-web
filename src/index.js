@@ -5,6 +5,7 @@ var app=M.server();
 app.listen(8888);
 var Db = mysql.createConnection(
 {
+
     "host"     : "127.0.0.1",
     "user"     : "root",
     "password" : "123456",
